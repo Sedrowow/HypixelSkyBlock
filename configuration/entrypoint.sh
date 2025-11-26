@@ -1,18 +1,18 @@
 #!/bin/bash
+set -e
 
-# Copy the Forwarding Secret
-cp configuration_files/forwarding.secret ./forwarding.secret
+# Read the forwarding secret
+secret=$(cat /app/configuration_files/forwarding.secret)
 
 # Update resources.json with the forwarding secret
-secret=$(cat ./forwarding.secret)
-jq --arg secret "$secret" '.["velocity-secret"] = $secret' ./configuration/resources.json > ./configuration/resources.json.tmp
-mv ./configuration/resources.json.tmp ./configuration/resources.json
+jq --arg secret "$secret" '.["velocity-secret"] = $secret' /app/configuration/resources.json > /app/configuration/resources.json.tmp
+mv /app/configuration/resources.json.tmp /app/configuration/resources.json
 
-# Replace the secret in settings.yml
-sed -i "s/secret: '.*'/secret: '$secret'/" ./settings.yml
+# Replace the secret in settings.yml for NanoLimbo
+sed -i "s/secret: '.*'/secret: '$secret'/" /app/settings.yml
 
 # Set the settings.yml bind: ip: 'localhost' to bind: ip: '0.0.0.0'
-sed -i "s/ip: 'localhost'/ip: '0.0.0.0'/" ./settings.yml
+sed -i "s/ip: 'localhost'/ip: '0.0.0.0'/" /app/settings.yml
 
-echo "$SERVICE_CMD"
+echo "Starting: $SERVICE_CMD"
 exec $SERVICE_CMD

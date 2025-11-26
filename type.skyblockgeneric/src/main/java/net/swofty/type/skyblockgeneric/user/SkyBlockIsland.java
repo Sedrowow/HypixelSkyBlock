@@ -110,23 +110,31 @@ public class SkyBlockIsland {
                         this, coop != null, coop != null ? coop.memberProfiles() : List.of(islandID)
                 ));
             } else {
+                // Load existing island from database
                 if (database.has("version"))
                     islandVersion = (int) database.get("version", Integer.class);
                 else islandVersion = 0;
 
-                switch (islandVersion) {
-                    case 0:
-                        lastSaved = System.currentTimeMillis();
-                        try {
-                            world = AnvilPolar.anvilToPolar(Path.of(ISLAND_TEMPLATE_NAME), ChunkSelector.radius(3));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-                    case 1:
-                        world = PolarReader.read(((Binary) database.get("data", Binary.class)).getData());
+                // CRITICAL FIX: If database has saved data, ALWAYS load it (regardless of version)
+                // Only load template for completely new islands (no data field)
+                if (database.has("data")) {
+                    // Load saved island data
+                    world = PolarReader.read(((Binary) database.get("data", Binary.class)).getData());
+                    if (database.has("lastSaved")) {
                         lastSaved = (long) database.get("lastSaved", Long.class);
-                        break;
+                    } else {
+                        lastSaved = System.currentTimeMillis();
+                    }
+                } else {
+                    // Legacy case: Database exists but no data saved yet (very old islands)
+                    // Load from template and will be saved with proper data on next save
+                    Logger.warn("Island " + islandID + " exists in database but has no saved data - loading from template");
+                    lastSaved = System.currentTimeMillis();
+                    try {
+                        world = AnvilPolar.anvilToPolar(Path.of(ISLAND_TEMPLATE_NAME), ChunkSelector.radius(3));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 int oldVersion = islandVersion;
@@ -147,8 +155,10 @@ public class SkyBlockIsland {
                     this, coop != null, onlinePlayers, coop != null ? coop.memberProfiles() : List.of(islandID))
             );
 
-            future.complete(islandInstance);
+            // CRITICAL: Set players ready for events BEFORE completing the future
+            // Otherwise .join() returns before players are marked ready, causing item interaction bugs
             onlinePlayers.forEach(HypixelPlayer::setReadyForEvents);
+            future.complete(islandInstance);
         }).start();
 
         return future;

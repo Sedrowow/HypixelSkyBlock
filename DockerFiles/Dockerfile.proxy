@@ -30,6 +30,9 @@ RUN rm velocity.toml
 # Add back our velocity.toml
 RUN cp configuration_files/velocity.toml velocity.toml
 
+# Copy forwarding secret file
+RUN cp configuration_files/forwarding.secret forwarding.secret
+
 # Download resources.json
 RUN mkdir -p configuration
 
@@ -37,12 +40,12 @@ RUN cp configuration_files/resources.json ./configuration/resources.json
 
 
 # Get Contents of the forwarding secret and add it to resources.json
-RUN secret=$(cat forwarding.secret) && \
+RUN secret=$(cat configuration_files/forwarding.secret) && \
     jq --arg secret "$secret" '.["velocity-secret"] = $secret' ./configuration/resources.json > ./configuration/resources.json.tmp && \
     mv ./configuration/resources.json.tmp ./configuration/resources.json
 
 # Expose the required port
 EXPOSE 25565
 
-# Start the Velocity proxy and Copy the Forward.secret to the config files for use by other Dockerfiles
-CMD ["sh", "-c", "cp forwarding.secret /app/configuration_files/forwarding.secret && java -jar velocity.jar"]
+# Start the Velocity proxy
+CMD ["java", "-jar", "velocity.jar"]

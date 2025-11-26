@@ -47,3 +47,6 @@ build/
 /configuration/skyblock/islands/hypixel_skyblock_hub/
 /configuration/hypixel_prototype_lobby/
 .gradle/
+
+### other stuff ###
+./configuration/world.zip

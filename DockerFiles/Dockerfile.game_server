@@ -56,4 +56,4 @@ RUN chmod +x entrypoint.sh
 # Set the settings.yml bind: ip: 'localhost' to bind: ip: '0.0.0.0'
 RUN sed -i "s/ip: 'localhost'/ip: '0.0.0.0'/" ./settings.yml
 
-CMD ["sh", "entrypoint.sh"]
+CMD ["/bin/bash", "/app/entrypoint.sh"]
