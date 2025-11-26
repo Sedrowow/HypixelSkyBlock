@@ -24,6 +24,5 @@ public class ActionPlayerTeleport implements HypixelEventClass {
 
         // Ensure player is marked ready for events after island loads
         player.setReadyForEvents();
-        org.tinylog.Logger.info("[DEBUG] Set player " + player.getUsername() + " ready for events, isReadyForEvents: " + player.isReadyForEvents());
     }
 }

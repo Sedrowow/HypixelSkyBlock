@@ -46,12 +46,7 @@ public class ActionPlayerSkyBlockDataSave implements HypixelEventClass {
 
         // Save the player's island before evicting cache
         if (player.getSkyBlockIsland() != null) {
-            try {
-                player.getSkyBlockIsland().runVacantCheck();
-                Logger.info("Triggered island vacant check for: " + player.getUsername());
-            } catch (Exception e) {
-                Logger.error(e, "Failed to run island vacant check on disconnect for: " + player.getUsername());
-            }
+            player.getSkyBlockIsland().runVacantCheck();
         }
 
         // Evict from SkyBlock cache

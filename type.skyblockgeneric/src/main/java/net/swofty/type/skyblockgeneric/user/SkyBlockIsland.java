@@ -226,21 +226,10 @@ public class SkyBlockIsland {
      * when the server stops while players are still present.
      */
     public static void saveAllNow() {
-        Logger.info("[SHUTDOWN] saveAllNow called, loaded islands: " + loadedIslands.size());
-        try {
-            int savedCount = 0;
-            for (SkyBlockIsland island : loadedIslands.values()) {
-                if (island.world != null && island.islandInstance != null) {
-                    Logger.info("[SHUTDOWN] Saving island: " + island.islandID);
-                    island.save();
-                    savedCount++;
-                } else {
-                    Logger.warn("[SHUTDOWN] Skipping island " + island.islandID + " (world=" + (island.world != null) + ", instance=" + (island.islandInstance != null) + ")");
-                }
+        for (SkyBlockIsland island : loadedIslands.values()) {
+            if (island.world != null && island.islandInstance != null) {
+                island.save();
             }
-            Logger.info("[SHUTDOWN] Successfully saved " + savedCount + " islands");
-        } catch (Exception ex) {
-            Logger.error(ex, "Failed to save all islands on shutdown");
         }
     }
 }
