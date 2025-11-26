@@ -5,16 +5,14 @@ WORKDIR /app
 # Install unzip for extracting files
 RUN apt-get update && apt-get install -y jq unzip screen && apt-get clean
 
-# Download SkyBlockCore.jar
-ADD https://github.com/Swofty-Developments/HypixelSkyBlock/releases/download/latest/HypixelCore.jar HypixelCore.jar
-
-# Download Services
-ADD https://github.com/Swofty-Developments/HypixelSkyBlock/releases/download/latest/ServiceAPI.jar ./ServiceAPI.jar
-ADD https://github.com/Swofty-Developments/HypixelSkyBlock/releases/download/latest/ServiceAuctionHouse.jar ./ServiceAuctionHouse.jar
-ADD https://github.com/Swofty-Developments/HypixelSkyBlock/releases/download/latest/ServiceBazaar.jar ./ServiceBazaar.jar
-ADD https://github.com/Swofty-Developments/HypixelSkyBlock/releases/download/latest/ServiceItemTracker.jar ./ServiceItemTracker.jar
-ADD https://github.com/Swofty-Developments/HypixelSkyBlock/releases/download/latest/ServiceDataMutex.jar ./ServiceDataMutex.jar
-ADD https://github.com/Swofty-Developments/HypixelSkyBlock/releases/download/latest/ServiceParty.jar ./ServiceParty.jar
+# Copy locally built JARs instead of downloading from GitHub
+COPY ./loader/build/libs/HypixelCore.jar HypixelCore.jar
+COPY ./service.api/build/libs/ServiceAPI.jar ./ServiceAPI.jar
+COPY ./service.auctionhouse/build/libs/ServiceAuctionHouse.jar ./ServiceAuctionHouse.jar
+COPY ./service.bazaar/build/libs/ServiceBazaar.jar ./ServiceBazaar.jar
+COPY ./service.itemtracker/build/libs/ServiceItemTracker.jar ./ServiceItemTracker.jar
+COPY ./service.datamutex/build/libs/ServiceDataMutex.jar ./ServiceDataMutex.jar
+COPY ./service.party/build/libs/ServiceParty.jar ./ServiceParty.jar
 
 # Copy configuration data
 COPY ./configuration /app/configuration_files
