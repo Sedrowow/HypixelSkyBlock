@@ -170,6 +170,20 @@ public class Hypixel {
         });
         typeLoader.afterInitialize(minecraftServer);
 
+        // Save all loaded islands on JVM shutdown to prevent data loss on restarts
+        try {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    org.tinylog.Logger.info("Shutdown detected: saving all loaded islands...");
+                    net.swofty.type.skyblockgeneric.user.SkyBlockIsland.saveAllNow();
+                } catch (Throwable t) {
+                    org.tinylog.Logger.error(t, "Error while saving islands during shutdown");
+                }
+            }, "island-save-shutdown-hook"));
+        } catch (Throwable t) {
+            org.tinylog.Logger.error(t, "Failed to register shutdown hook for island saving");
+        }
+
         /**
          * Start the server
          */

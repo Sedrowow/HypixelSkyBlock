@@ -220,4 +220,20 @@ public class SkyBlockIsland {
             return TaskSchedule.tick(4);
         }, ExecutionType.TICK_END);
     }
+
+    /**
+     * Saves all loaded islands immediately. Intended for shutdown hooks to prevent progress loss
+     * when the server stops while players are still present.
+     */
+    public static void saveAllNow() {
+        try {
+            for (SkyBlockIsland island : loadedIslands.values()) {
+                if (island.world != null && island.islandInstance != null) {
+                    island.save();
+                }
+            }
+        } catch (Exception ex) {
+            Logger.error(ex, "Failed to save all islands on shutdown");
+        }
+    }
 }
