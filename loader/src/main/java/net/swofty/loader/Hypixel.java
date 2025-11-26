@@ -246,11 +246,35 @@ public class Hypixel {
             }
         });
 
-        CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS)
+        // Allow more time for proxy registration to avoid restart loops on slow boots
+        CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS)
                 .execute(() -> {
                     if (startServer.isDone()) return;
-                    Logger.error("Couldn't connect to proxy. Shutting down...");
-                    System.exit(0);
+                    Logger.error("Couldn't connect to proxy within 5s. Retrying registration...");
+                    try {
+                        JSONObject retryMessage = new JSONObject()
+                                .put("type", serverType.name())
+                                .put("max_players", maxPlayers)
+                                .put("host", InetAddress.getLocalHost().getHostName());
+                        if (isTestFlow) {
+                            retryMessage.put("is_test_flow", true)
+                                    .put("test_flow_name", testFlowName)
+                                    .put("test_flow_index", testFlowIndex)
+                                    .put("test_flow_total", testFlowTotal);
+                        }
+                        ServerOutboundMessage.sendMessageToProxy(
+                                ToProxyChannels.REGISTER_SERVER,
+                                retryMessage,
+                                (response) -> startServer.complete(Integer.parseInt(response.get("port").toString())));
+                    } catch (Throwable t) {
+                        Logger.error(t, "Error while retrying proxy registration");
+                    }
+
+                    CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS).execute(() -> {
+                        if (startServer.isDone()) return;
+                        Logger.error("Proxy did not respond after retry. Shutting down...");
+                        System.exit(0);
+                    });
                 });
 
         JSONObject registerMessage = new JSONObject()
