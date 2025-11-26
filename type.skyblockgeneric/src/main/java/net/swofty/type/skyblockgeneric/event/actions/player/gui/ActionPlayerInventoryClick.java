@@ -81,10 +81,12 @@ public class ActionPlayerInventoryClick implements HypixelEventClass {
 
                 if (!item.canPickup()) {
                     event.setCancelled(true);
-                    // Clear cursor item to prevent duplication when placing items in non-pickup slots
+                    // Clear cursor and refresh inventory to prevent duplication
                     if (!cursorItem.isNA()) {
                         player.getInventory().setCursorItem(ItemStack.AIR);
                     }
+                    // Force inventory sync to prevent visual desync
+                    player.getInventory().update();
                 } else if (!gui.allowHotkeying() && isHotKey(event)) {
                     event.setCancelled(true);
                     return;

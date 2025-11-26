@@ -260,6 +260,22 @@ services:
     networks:
       - hypixel_network
 
+  service_datamutex:
+    image: game_server_prepared
+    container_name: service_datamutex
+    restart: "unless-stopped"
+    environment:
+      SERVICE_CMD: java -jar ServiceDataMutex.jar
+    depends_on:
+      proxy:
+        condition: service_healthy
+      game_server_builder:
+        condition: service_started
+    volumes:
+      - ./configuration:/app/configuration_files
+    networks:
+      - hypixel_network
+
 volumes:
   mongodb-data:
     driver: local
