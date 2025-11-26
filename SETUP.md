@@ -12,7 +12,7 @@ This guide will help you set up the HypixelSkyBlock server from scratch.
 ## Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/Swofty-Developments/HypixelSkyBlock.git
+git clone https://github.com/Sedrowow/HypixelSkyBlock.git
 cd HypixelSkyBlock
 ```
 
@@ -303,15 +303,17 @@ HypixelSkyBlock/
 - [Main README](README.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [License](LICENSE)
+- [This Repository](https://github.com/Sedrowow/HypixelSkyBlock)
 - [Original Repository](https://github.com/Swofty-Developments/HypixelSkyBlock)
 
 ## Getting Help
 
 If you encounter issues not covered in this guide:
 
-1. Check the [Issues](https://github.com/Swofty-Developments/HypixelSkyBlock/issues) page
-2. Search for similar problems in closed issues
-3. Create a new issue with:
+1. Check the [Issues](https://github.com/Sedrowow/HypixelSkyBlock/issues) page on this fork
+2. Check the [Original Repository Issues](https://github.com/Swofty-Developments/HypixelSkyBlock/issues) for upstream issues
+3. Search for similar problems in closed issues
+4. Create a new issue with:
    - Detailed description of the problem
    - Steps to reproduce
    - Relevant log outputs
