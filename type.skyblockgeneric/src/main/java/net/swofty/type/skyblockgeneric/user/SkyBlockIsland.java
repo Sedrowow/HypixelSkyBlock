@@ -75,6 +75,19 @@ public class SkyBlockIsland {
 
         new Thread(() -> {
             if (created) {
+                // Island already loaded - get online players and mark them ready
+                List<SkyBlockPlayer> onlinePlayers;
+                if (coop != null) {
+                    onlinePlayers = coop.getOnlineMembers();
+                } else {
+                    try {
+                        onlinePlayers = List.of(SkyBlockGenericLoader.getPlayerFromProfileUUID(islandID));
+                    } catch (NullPointerException e) {
+                        onlinePlayers = List.of();
+                    }
+                }
+                // CRITICAL: Mark players ready BEFORE completing future for reconnects
+                onlinePlayers.forEach(HypixelPlayer::setReadyForEvents);
                 future.complete(islandInstance);
                 return;
             }
