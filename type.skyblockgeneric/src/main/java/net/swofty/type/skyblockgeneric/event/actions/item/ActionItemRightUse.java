@@ -20,8 +20,11 @@ public class ActionItemRightUse implements HypixelEventClass {
         SkyBlockItem item = new SkyBlockItem(itemStack);
         SkyBlockPlayer player = (SkyBlockPlayer) event.getPlayer();
 
+        org.tinylog.Logger.info("[DEBUG] PlayerUseItemOnBlockEvent fired for " + player.getUsername() + ", readyForEvents: " + player.isReadyForEvents());
+
         if (item.hasComponent(InteractableComponent.class)) {
             InteractableComponent interactableComponent = item.getComponent(InteractableComponent.class);
+            org.tinylog.Logger.info("[DEBUG] Calling onRightClick for block interaction");
             interactableComponent.onRightClick(player, item);
         }
     }
@@ -33,8 +36,11 @@ public class ActionItemRightUse implements HypixelEventClass {
         SkyBlockItem item = new SkyBlockItem(itemStack);
         SkyBlockPlayer player = (SkyBlockPlayer) event.getPlayer();
 
+        org.tinylog.Logger.info("[DEBUG] PlayerUseItemEvent fired for " + player.getUsername() + ", readyForEvents: " + player.isReadyForEvents());
+
         if (item.hasComponent(InteractableComponent.class)) {
             InteractableComponent interactableComponent = item.getComponent(InteractableComponent.class);
+            org.tinylog.Logger.info("[DEBUG] Calling onRightClick for air interaction");
             interactableComponent.onRightClick(player, item);
         }
     }
