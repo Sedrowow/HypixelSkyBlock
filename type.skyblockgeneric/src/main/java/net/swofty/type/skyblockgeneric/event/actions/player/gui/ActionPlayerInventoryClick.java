@@ -6,6 +6,7 @@ import net.minestom.server.event.inventory.InventoryCloseEvent;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.inventory.PlayerInventory;
 import net.minestom.server.inventory.click.Click;
+import net.minestom.server.item.ItemStack;
 import net.swofty.commons.StringUtility;
 import net.swofty.type.generic.event.EventNodes;
 import net.swofty.type.generic.event.HypixelEvent;
@@ -80,6 +81,10 @@ public class ActionPlayerInventoryClick implements HypixelEventClass {
 
                 if (!item.canPickup()) {
                     event.setCancelled(true);
+                    // Clear cursor item to prevent duplication when placing items in non-pickup slots
+                    if (!cursorItem.isNA()) {
+                        player.getInventory().setCursorItem(ItemStack.AIR);
+                    }
                 } else if (!gui.allowHotkeying() && isHotKey(event)) {
                     event.setCancelled(true);
                     return;
